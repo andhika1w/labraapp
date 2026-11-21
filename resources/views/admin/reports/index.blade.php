@@ -1,60 +1,90 @@
 @extends('layouts.app')
 
-@section('title', 'Semua Pengaduan')
+@section('title', 'Pengaduan')
+@section('heading', 'Pengaduan mahasiswa')
+@section('subtitle', 'Semua laporan yang masuk. Saring berdasarkan status untuk fokus pada antrean tertentu.')
+
+@php
+    $list = collect($reports instanceof \Illuminate\Contracts\Pagination\Paginator ? $reports->items() : ($reports ?? []));
+    $statuses = ['Menunggu', 'Diverifikasi', 'Diproses', 'Selesai', 'Ditolak'];
+    $counts = collect($statuses)->mapWithKeys(fn ($s) => [$s => $list->where('status', $s)->count()])->all();
+@endphp
 
 @section('content')
-<div class="sm:flex sm:items-center">
-    <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-gray-900">Pengaduan Mahasiswa</h1>
-        <p class="mt-2 text-sm text-gray-700">Daftar semua laporan pengaduan yang masuk ke sistem.</p>
+<div x-data="{
+        f: new URLSearchParams(location.search).get('status') || 'Semua',
+        counts: @js($counts),
+     }">
+    <div class="chips mb-4" role="toolbar" aria-label="Saring berdasarkan status">
+        <button type="button" class="chip" :aria-pressed="(f === 'Semua').toString()" @click="f = 'Semua'">
+            Semua <span class="chip-count">{{ $list->count() }}</span>
+        </button>
+        @foreach ($counts as $status => $n)
+            <button type="button" class="chip" :aria-pressed="(f === '{{ $status }}').toString()" @click="f = '{{ $status }}'">
+                {{ $status }} <span class="chip-count">{{ $n }}</span>
+            </button>
+        @endforeach
     </div>
-</div>
-<div class="mt-8 flow-root">
-    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-300">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Kode</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Mahasiswa</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Judul / Kategori</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Tanggal</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
-                            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                <span class="sr-only">Aksi</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">
-                        @forelse($reports ?? [] as $report)
-                        <tr>
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ $report->report_code }}</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                {{ $report->user->name ?? 'Unknown' }}<br>
-                                <span class="text-xs text-gray-400">{{ $report->user->nim ?? '-' }}</span>
+
+    <div class="panel overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Kode</th>
+                        <th scope="col">Pelapor</th>
+                        <th scope="col">Aduan</th>
+                        <th scope="col">Tanggal</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"><span class="sr-only">Aksi</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($list as $report)
+                        <tr x-show="f === 'Semua' || f === '{{ $report->status }}'">
+                            <td><span class="code">{{ $report->report_code }}</span></td>
+                            <td class="whitespace-nowrap">
+                                <p class="cell-strong">{{ $report->user->name ?? 'Tidak diketahui' }}</p>
+                                <p class="cell-sub num">{{ $report->user->nim ?? '-' }}</p>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                <span class="font-medium text-gray-900">{{ $report->title }}</span><br>
-                                <span class="text-xs">{{ $report->category->name ?? '-' }}</span>
+                            <td class="min-w-56">
+                                <p class="cell-strong">{{ $report->title }}</p>
+                                <p class="cell-sub">{{ $report->category->name ?? '-' }}</p>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $report->created_at->format('d M Y') }}</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                <x-badge :status="$report->status" />
-                            </td>
-                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                <a href="/admin/pengaduan/detail/{{ $report->id }}" class="text-blue-600 hover:text-blue-900">Detail</a>
+                            <td class="num whitespace-nowrap text-[13px]">{{ $report->created_at->format('d M Y') }}</td>
+                            <td><x-badge :status="$report->status" /></td>
+                            <td class="text-right">
+                                <a href="/admin/pengaduan/detail/{{ $report->id }}" class="btn btn-ghost min-h-8 px-3 text-[13px]">Buka</a>
                             </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
-                            <td colspan="6" class="px-3 py-4 text-sm text-gray-500 text-center">Belum ada pengaduan.</td>
+                            <td colspan="6">
+                                <div class="empty">
+                                    <p class="empty-title">Belum ada pengaduan</p>
+                                    <p class="empty-text">Laporan dari mahasiswa akan muncul di sini begitu dikirim.</p>
+                                </div>
+                            </td>
                         </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @endforelse
+
+                    @if ($list->isNotEmpty())
+                        <tr x-cloak x-show="f !== 'Semua' && !counts[f]">
+                            <td colspan="6">
+                                <div class="empty">
+                                    <p class="empty-title">Tidak ada pengaduan berstatus <span x-text="f"></span></p>
+                                    <button type="button" class="link-action mt-2" @click="f = 'Semua'">Tampilkan semua</button>
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
+@if ($reports instanceof \Illuminate\Contracts\Pagination\Paginator)
+    <div class="mt-6">{{ $reports->links() }}</div>
+@endif
 @endsection

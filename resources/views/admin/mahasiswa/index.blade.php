@@ -1,64 +1,73 @@
 @extends('layouts.app')
 
 @section('title', 'Data Mahasiswa')
+@section('subtitle', 'Akun mahasiswa yang bisa masuk dan mengirim pengaduan.')
+
+@section('actions')
+    <a href="{{ route('admin.mahasiswa.create') }}" class="btn btn-primary">
+        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+        Tambah Mahasiswa
+    </a>
+@endsection
 
 @section('content')
-<div class="sm:flex sm:items-center">
-    <div class="sm:flex-auto">
-        <h1 class="text-base font-semibold leading-6 text-gray-900">Mahasiswa</h1>
-        <p class="mt-2 text-sm text-gray-700">Daftar semua akun mahasiswa yang terdaftar di sistem.</p>
-    </div>
-    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-        <a href="{{ route('admin.mahasiswa.create') }}" class="block rounded-md bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Tambah Mahasiswa</a>
-    </div>
-</div>
-<div class="mt-8 flow-root">
-    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-            <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-300">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Nama</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">NIM</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Program Studi</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
-                            <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                <span class="sr-only">Aksi</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">
-                        @forelse ($mahasiswa as $m)
-                        <tr>
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ $m->name }}</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $m->nim }}</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $m->program_studi }}</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $m->email }}</td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                @if($m->is_active)
-                                    <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Aktif</span>
-                                @else
-                                    <span class="inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">Nonaktif</span>
-                                @endif
+<div x-data="{ q: '' }">
+    @if ($mahasiswa->isNotEmpty())
+        <div class="relative mb-4 max-w-sm">
+            <label for="cari" class="sr-only">Cari mahasiswa</label>
+            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+            </svg>
+            <input id="cari" type="search" x-model.debounce.150ms="q" class="input pl-9" placeholder="Cari nama, NIM, atau prodi">
+        </div>
+    @endif
+
+    <div class="panel overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Mahasiswa</th>
+                        <th scope="col">NIM</th>
+                        <th scope="col">Program Studi</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"><span class="sr-only">Aksi</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($mahasiswa as $m)
+                        <tr data-search="{{ mb_strtolower($m->name . ' ' . $m->nim . ' ' . $m->program_studi) }}"
+                            x-show="!q || $el.dataset.search.includes(q.toLowerCase())">
+                            <td class="whitespace-nowrap">
+                                <p class="cell-strong">{{ $m->name }}</p>
+                                <p class="cell-sub">{{ $m->email }}</p>
                             </td>
-                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                <a href="{{ route('admin.mahasiswa.edit', $m->id) }}" class="text-blue-600 hover:text-blue-900 mr-4">Edit<span class="sr-only">, {{ $m->name }}</span></a>
-                                <form action="{{ route('admin.mahasiswa.destroy', $m->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun ini? Semua pengaduan terkait mungkin akan terpengaruh.');">
-                                    @csrf
-                                    <button type="submit" class="text-red-600 hover:text-red-900">Hapus<span class="sr-only">, {{ $m->name }}</span></button>
-                                </form>
+                            <td class="num whitespace-nowrap text-[13px]">{{ $m->nim }}</td>
+                            <td class="whitespace-nowrap">{{ $m->program_studi }}</td>
+                            <td><x-badge :status="$m->is_active ? 'Aktif' : 'Nonaktif'" /></td>
+                            <td class="whitespace-nowrap text-right">
+                                <div class="inline-flex items-center gap-4">
+                                    <a href="{{ route('admin.mahasiswa.edit', $m->id) }}" class="link-action">Edit<span class="sr-only"> {{ $m->name }}</span></a>
+                                    <form action="{{ route('admin.mahasiswa.destroy', $m->id) }}" method="POST"
+                                          onsubmit="return confirm('Hapus akun {{ $m->name }}? Pengaduan yang terkait mungkin ikut terpengaruh.');">
+                                        @csrf
+                                        <button type="submit" class="link-action link-danger">Hapus<span class="sr-only"> {{ $m->name }}</span></button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
-                            <td colspan="6" class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 text-center">Belum ada data mahasiswa.</td>
+                            <td colspan="5">
+                                <div class="empty">
+                                    <p class="empty-title">Belum ada akun mahasiswa</p>
+                                    <p class="empty-text">Buat akun agar mahasiswa bisa masuk dan melaporkan kerusakan fasilitas.</p>
+                                </div>
+                            </td>
                         </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
