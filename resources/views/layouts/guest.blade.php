@@ -16,7 +16,7 @@
 <body class="min-h-dvh bg-paper font-sans text-ink antialiased">
     <div class="grid min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
 
-        {{-- Panel informasi: seperti papan penunjuk di lobi gedung --}}
+        {{-- Panel informasi desktop: seperti papan penunjuk di lobi gedung --}}
         <aside class="hidden flex-col justify-between bg-sign px-12 py-10 text-sign-ink lg:flex xl:px-16">
             <div class="flex items-center gap-3">
                 <span class="brand-mark" aria-hidden="true"></span>
@@ -50,23 +50,49 @@
             <p class="text-xs text-sign-muted">Akun mahasiswa dibuat oleh admin kampus.</p>
         </aside>
 
-        <main class="flex items-center justify-center px-5 py-12 sm:px-8">
-            <div class="w-full max-w-sm">
-                <div class="mb-10 flex items-center gap-3 lg:hidden">
+        <main class="flex flex-col justify-center px-4 py-8 sm:px-8 sm:py-12">
+            <div class="mx-auto w-full max-w-sm">
+                {{-- Header merek untuk mobile & tablet --}}
+                <div class="mb-7 flex items-center gap-3 rounded-lg bg-sign px-4 py-3.5 text-sign-ink lg:hidden">
                     <span class="brand-mark" aria-hidden="true"></span>
-                    <div class="leading-tight">
-                        <span class="block text-[15px] font-semibold">Labra</span>
-                        <span class="block text-xs text-ink-3">Pengaduan Fasilitas Kampus</span>
+                    <div class="min-w-0 leading-tight">
+                        <span class="block text-[15px] font-semibold text-white">Labra</span>
+                        <span class="block truncate text-xs text-sign-muted">Sistem Pengaduan Fasilitas Kampus</span>
                     </div>
                 </div>
 
-                @if (session('error'))
-                    <div class="flash flash-err" role="alert">
-                        <p>{{ session('error') }}</p>
-                    </div>
-                @endif
+                <div class="panel p-5 sm:p-7 lg:border-0 lg:bg-transparent lg:p-0">
+                    @if (session('error'))
+                        <div class="flash flash-err" role="alert">
+                            <p>{{ session('error') }}</p>
+                        </div>
+                    @endif
 
-                @yield('content')
+                    @yield('content')
+                </div>
+
+                {{-- Ringkasan 4 tahap untuk mobile & tablet --}}
+                <div class="mt-6 rounded-lg border border-line bg-sunken p-4 lg:hidden">
+                    <p class="section-label mb-2.5">Alur Penanganan Laporan</p>
+                    <ol class="grid grid-cols-2 gap-2 text-xs text-ink-2 sm:grid-cols-4">
+                        <li class="rounded border border-line bg-surface px-2.5 py-2">
+                            <span class="num block text-[11px] text-ink-3">01</span>
+                            <span class="font-medium text-ink">Menunggu</span>
+                        </li>
+                        <li class="rounded border border-line bg-surface px-2.5 py-2">
+                            <span class="num block text-[11px] text-ink-3">02</span>
+                            <span class="font-medium text-ink">Diverifikasi</span>
+                        </li>
+                        <li class="rounded border border-line bg-surface px-2.5 py-2">
+                            <span class="num block text-[11px] text-ink-3">03</span>
+                            <span class="font-medium text-ink">Diproses</span>
+                        </li>
+                        <li class="rounded border border-line bg-surface px-2.5 py-2">
+                            <span class="num block text-[11px] text-ink-3">04</span>
+                            <span class="font-medium text-ink">Selesai</span>
+                        </li>
+                    </ol>
+                </div>
             </div>
         </main>
     </div>

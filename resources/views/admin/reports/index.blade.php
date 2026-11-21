@@ -42,19 +42,23 @@
                 <tbody>
                     @forelse ($list as $report)
                         <tr x-show="f === 'Semua' || f === '{{ $report->status }}'">
-                            <td><span class="code">{{ $report->report_code }}</span></td>
-                            <td class="whitespace-nowrap">
-                                <p class="cell-strong">{{ $report->user->name ?? 'Tidak diketahui' }}</p>
-                                <p class="cell-sub num">{{ $report->user->nim ?? '-' }}</p>
+                            <td data-label="Kode"><span class="code">{{ $report->report_code }}</span></td>
+                            <td data-label="Pelapor" class="sm:whitespace-nowrap">
+                                <div>
+                                    <p class="cell-strong">{{ $report->user->name ?? 'Tidak diketahui' }}</p>
+                                    <p class="cell-sub num">{{ $report->user->nim ?? '-' }}</p>
+                                </div>
                             </td>
-                            <td class="min-w-56">
-                                <p class="cell-strong">{{ $report->title }}</p>
-                                <p class="cell-sub">{{ $report->category->name ?? '-' }}</p>
+                            <td data-label="Aduan" class="sm:min-w-56">
+                                <div>
+                                    <p class="cell-strong">{{ $report->title }}</p>
+                                    <p class="cell-sub">{{ $report->category->name ?? '-' }}</p>
+                                </div>
                             </td>
-                            <td class="num whitespace-nowrap text-[13px]">{{ $report->created_at->format('d M Y') }}</td>
-                            <td><x-badge :status="$report->status" /></td>
-                            <td class="text-right">
-                                <a href="/admin/pengaduan/detail/{{ $report->id }}" class="btn btn-ghost min-h-8 px-3 text-[13px]">Buka</a>
+                            <td data-label="Tanggal" class="num sm:whitespace-nowrap text-[13px]">{{ $report->created_at->format('d M Y') }}</td>
+                            <td data-label="Status"><x-badge :status="$report->status" /></td>
+                            <td class="cell-actions text-right">
+                                <a href="/admin/pengaduan/detail/{{ $report->id }}" class="btn btn-ghost min-h-9 sm:min-h-8 px-3 text-[13px]">Buka</a>
                             </td>
                         </tr>
                     @empty

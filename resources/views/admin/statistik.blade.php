@@ -28,7 +28,7 @@
     </div>
 </section>
 
-<div class="mt-8 grid gap-6 lg:grid-cols-2">
+<div class="mt-6 grid gap-6 sm:mt-8 lg:grid-cols-2">
     {{-- Distribusi status laporan --}}
     <section class="panel" aria-labelledby="status-dist">
         <div class="panel-head">
@@ -48,7 +48,7 @@
             @foreach ($statusItems as $item)
                 @php($pct = $total > 0 ? round(($item['count'] / $total) * 100, 1) : 0)
                 <div class="space-y-1.5">
-                    <div class="flex items-center justify-between text-sm">
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
                         <span class="flex items-center gap-2">
                             <x-badge :status="$item['badge']" />
                         </span>
@@ -75,14 +75,14 @@
             @else
                 <ol class="space-y-3">
                     @foreach ($topLocations as $loc)
-                        <li class="flex items-center justify-between rounded-md border border-line bg-sunken p-3">
-                            <div class="flex items-center gap-3 min-w-0">
+                        <li class="flex flex-wrap items-center justify-between gap-2 rounded-md border border-line bg-sunken p-3">
+                            <div class="flex items-center gap-3 min-w-0 flex-1">
                                 <span class="num flex h-6 w-6 flex-none items-center justify-center rounded-full bg-paper text-xs font-semibold text-ink-2 border border-line">
                                     {{ $loop->iteration }}
                                 </span>
                                 <span class="truncate text-sm font-medium text-ink">{{ $loc->location }}</span>
                             </div>
-                            <span class="num whitespace-nowrap text-xs font-semibold text-tag ml-3">
+                            <span class="num whitespace-nowrap text-xs font-semibold text-tag">
                                 {{ $loc->count }} laporan
                             </span>
                         </li>
@@ -94,7 +94,7 @@
 </div>
 
 {{-- Breakdown per kategori fasilitas --}}
-<section class="panel mt-8" aria-labelledby="kat-dist">
+<section class="panel mt-6 sm:mt-8" aria-labelledby="kat-dist">
     <div class="panel-head">
         <h2 id="kat-dist" class="panel-title">Pengaduan Berdasarkan Kategori Fasilitas</h2>
         <span class="num text-xs text-ink-3">{{ $categories->count() }} kategori terdaftar</span>
@@ -113,12 +113,12 @@
                 @forelse ($categories as $cat)
                     @php($catPct = $total > 0 ? round(($cat->reports_count / $total) * 100, 1) : 0)
                     <tr>
-                        <td class="cell-strong whitespace-nowrap">{{ $cat->name }}</td>
-                        <td><x-badge :status="$cat->is_active ? 'Aktif' : 'Nonaktif'" /></td>
-                        <td class="num whitespace-nowrap font-medium text-ink">{{ $cat->reports_count }} aduan</td>
-                        <td class="min-w-44">
-                            <div class="flex items-center gap-3">
-                                <div class="h-2 w-full max-w-32 overflow-hidden rounded-full bg-sunken border border-line">
+                        <td data-label="Kategori" class="cell-strong sm:whitespace-nowrap">{{ $cat->name }}</td>
+                        <td data-label="Status"><x-badge :status="$cat->is_active ? 'Aktif' : 'Nonaktif'" /></td>
+                        <td data-label="Jumlah" class="num sm:whitespace-nowrap font-medium text-ink">{{ $cat->reports_count }} aduan</td>
+                        <td data-label="Proporsi" class="sm:min-w-44">
+                            <div class="flex items-center justify-end gap-3 sm:justify-start">
+                                <div class="h-2 w-24 sm:w-full sm:max-w-32 overflow-hidden rounded-full bg-sunken border border-line">
                                     <div class="h-full bg-sign transition-all duration-500" style="width: {{ $catPct }}%"></div>
                                 </div>
                                 <span class="num text-xs text-ink-3">{{ $catPct }}%</span>

@@ -71,12 +71,12 @@
             @error('images') <p class="field-error">{{ $message }}</p> @enderror
             @error('images.*') <p class="field-error">{{ $message }}</p> @enderror
 
-            <ul x-cloak x-show="previews.length" class="mt-4 grid grid-cols-3 gap-3" role="list">
+            <ul x-cloak x-show="previews.length" class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3" role="list">
                 <template x-for="file in previews" :key="file.url">
                     <li class="overflow-hidden rounded-md border border-line bg-sunken"
                         x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="opacity-0 scale-95">
                         <img :src="file.url" :alt="'Pratinjau ' + file.name" class="aspect-[4/3] w-full object-cover">
-                        <p class="truncate px-2 py-1.5 text-xs text-ink-3"><span x-text="file.name"></span> · <span class="num" x-text="file.size"></span></p>
+                        <p class="truncate px-2.5 py-2 text-xs text-ink-3"><span x-text="file.name"></span> · <span class="num" x-text="file.size"></span></p>
                     </li>
                 </template>
             </ul>

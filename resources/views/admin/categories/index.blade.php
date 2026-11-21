@@ -26,10 +26,10 @@
             <tbody>
                 @forelse ($categories as $category)
                     <tr>
-                        <td class="cell-strong whitespace-nowrap">{{ $category->name }}</td>
-                        <td class="min-w-48">{{ $category->description ?: '—' }}</td>
-                        <td><x-badge :status="$category->is_active ? 'Aktif' : 'Nonaktif'" /></td>
-                        <td class="whitespace-nowrap text-right">
+                        <td data-label="Nama" class="cell-strong sm:whitespace-nowrap">{{ $category->name }}</td>
+                        <td data-label="Deskripsi" class="sm:min-w-48">{{ $category->description ?: '—' }}</td>
+                        <td data-label="Status"><x-badge :status="$category->is_active ? 'Aktif' : 'Nonaktif'" /></td>
+                        <td class="cell-actions sm:whitespace-nowrap text-right">
                             <div class="inline-flex items-center gap-4">
                                 <a href="/admin/kategori/edit/{{ $category->id }}" class="link-action">Edit<span class="sr-only"> {{ $category->name }}</span></a>
                                 <form action="/admin/kategori/hapus/{{ $category->id }}" method="POST" onsubmit="return confirm('Hapus kategori &quot;{{ $category->name }}&quot;?');">

@@ -52,6 +52,11 @@
         background-color: var(--color-paper);
         color: var(--color-ink);
         text-rendering: optimizeLegibility;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        overflow-x: hidden;
     }
 
     [x-cloak] {
@@ -167,6 +172,7 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        min-height: 2.5rem;
         padding: 0.5rem 0.75rem;
         border-radius: var(--radius-ctl);
         font-size: 0.875rem;
@@ -198,36 +204,118 @@
         background-color: var(--color-tag);
     }
 
+    /* ---------- Navigasi bawah mobile ---------- */
+    .bottom-nav {
+        position: fixed;
+        inset-inline: 0;
+        bottom: 0;
+        z-index: 30;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        background-color: rgb(255 255 255 / 0.96);
+        backdrop-filter: blur(8px);
+        border-top: 1px solid var(--color-line);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    .bottom-nav-link {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        min-height: 3.5rem;
+        padding: 0.375rem 0.25rem;
+        font-size: 0.6875rem;
+        font-weight: 500;
+        color: var(--color-ink-3);
+        text-align: center;
+        transition: color 150ms ease, background-color 150ms ease;
+    }
+
+    .bottom-nav-link:hover {
+        color: var(--color-ink);
+    }
+
+    .bottom-nav-link.is-active {
+        color: var(--color-sign);
+        font-weight: 600;
+    }
+
+    .bottom-nav-link.is-active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 25%;
+        right: 25%;
+        height: 2.5px;
+        border-radius: 0 0 2px 2px;
+        background-color: var(--color-tag);
+    }
+
     /* ---------- Kepala halaman ---------- */
     .page-head {
         display: flex;
         flex-wrap: wrap;
         align-items: flex-end;
         justify-content: space-between;
-        gap: 1rem;
-        margin-bottom: 1.75rem;
+        gap: 0.875rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+        .page-head {
+            margin-bottom: 1.75rem;
+        }
     }
 
     .page-title {
-        font-size: clamp(1.375rem, 1.1rem + 1vw, 1.75rem);
-        line-height: 1.2;
+        font-size: clamp(1.3125rem, 1.05rem + 1.1vw, 1.75rem);
+        line-height: 1.22;
         font-weight: 600;
         letter-spacing: -0.01em;
         text-wrap: balance;
+        overflow-wrap: anywhere;
     }
 
     .page-sub {
         margin-top: 0.375rem;
         max-width: 62ch;
-        font-size: 0.9375rem;
+        font-size: clamp(0.875rem, 0.84rem + 0.2vw, 0.9375rem);
+        line-height: 1.5;
         color: var(--color-ink-3);
+    }
+
+    .page-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+    }
+
+    .page-actions > .btn {
+        width: 100%;
+    }
+
+    @media (min-width: 480px) {
+        .page-actions {
+            width: auto;
+        }
+
+        .page-actions > .btn {
+            width: auto;
+        }
     }
 
     .back-link {
         display: inline-flex;
         align-items: center;
         gap: 0.375rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.625rem;
+        padding: 0.25rem 0;
         font-size: 0.8125rem;
         font-weight: 500;
         color: var(--color-ink-3);
@@ -252,7 +340,7 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        min-height: 2.5rem;
+        min-height: 2.625rem;
         padding: 0 1rem;
         border: 1px solid transparent;
         border-radius: var(--radius-ctl);
@@ -265,6 +353,12 @@
             border-color 150ms ease,
             color 150ms ease,
             transform 100ms ease;
+    }
+
+    @media (min-width: 640px) {
+        .btn {
+            min-height: 2.5rem;
+        }
     }
 
     .btn:active {
@@ -352,10 +446,11 @@
 
     .panel-head {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
-        gap: 1rem;
-        padding: 0.875rem 1.25rem;
+        gap: 0.5rem 1rem;
+        padding: 0.875rem 1rem;
         border-bottom: 1px solid var(--color-line);
     }
 
@@ -368,7 +463,7 @@
     }
 
     .panel-body {
-        padding: 1.25rem;
+        padding: 1rem;
     }
 
     .panel-foot {
@@ -377,13 +472,24 @@
         align-items: center;
         justify-content: flex-end;
         gap: 0.5rem;
-        padding: 0.875rem 1.25rem;
+        padding: 0.875rem 1rem;
         border-top: 1px solid var(--color-line);
         background-color: var(--color-sunken);
         border-radius: 0 0 var(--radius-card) var(--radius-card);
     }
 
+    @media (max-width: 479.98px) {
+        .panel-foot > .btn {
+            flex: 1 1 auto;
+        }
+    }
+
     @media (min-width: 640px) {
+        .panel-head,
+        .panel-foot {
+            padding: 0.875rem 1.25rem;
+        }
+
         .panel-body {
             padding: 1.5rem;
         }
@@ -418,16 +524,24 @@
     .input {
         display: block;
         width: 100%;
-        min-height: 2.625rem;
+        min-height: 2.75rem;
         padding: 0 0.75rem;
         background-color: var(--color-surface);
         border: 1px solid var(--color-line-strong);
         border-radius: var(--radius-ctl);
         color: var(--color-ink);
-        font-size: 0.9375rem;
+        /* 16px di mobile mencegah auto-zoom iOS Safari */
+        font-size: 1rem;
         transition:
             border-color 150ms ease,
             box-shadow 150ms ease;
+    }
+
+    @media (min-width: 640px) {
+        .input {
+            min-height: 2.625rem;
+            font-size: 0.9375rem;
+        }
     }
 
     .input::placeholder {
@@ -542,7 +656,7 @@
         cursor: pointer;
     }
 
-    /* ---------- Tabel ---------- */
+    /* ---------- Tabel & Transformasi Kartu Mobile ---------- */
     .table {
         width: 100%;
         border-collapse: collapse;
@@ -581,20 +695,100 @@
         background-color: #faf9f5;
     }
 
+    /* Di layar < 640px, tabel bertransformasi menjadi kartu vertikal tanpa scroll horizontal */
+    @media (max-width: 639.98px) {
+        .table thead {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .table,
+        .table tbody {
+            display: block;
+            width: 100%;
+        }
+
+        .table tbody tr {
+            display: grid;
+            gap: 0.625rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-line);
+        }
+
+        .table tbody tr:last-child {
+            border-bottom: 0;
+        }
+
+        .table td {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+            min-width: 0;
+            padding: 0;
+            border-bottom: 0;
+            text-align: right;
+            white-space: normal !important;
+        }
+
+        .table td[data-label]::before {
+            content: attr(data-label);
+            flex: none;
+            padding-top: 0.125rem;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-ink-3);
+            text-align: left;
+        }
+
+        .table td.cell-actions {
+            justify-content: flex-end;
+            padding-top: 0.625rem;
+            margin-top: 0.125rem;
+            border-top: 1px dashed var(--color-line);
+        }
+
+        .table td.cell-actions > .btn {
+            width: 100%;
+        }
+
+        .table td[colspan] {
+            display: block;
+            text-align: center;
+        }
+    }
+
     .cell-strong {
         font-weight: 500;
         color: var(--color-ink);
+        overflow-wrap: anywhere;
     }
 
     .cell-sub {
         margin-top: 0.125rem;
         font-size: 0.8125rem;
         color: var(--color-ink-3);
+        overflow-wrap: anywhere;
     }
 
     .empty {
-        padding: 3rem 1.5rem;
+        padding: 2.5rem 1.25rem;
         text-align: center;
+    }
+
+    @media (min-width: 640px) {
+        .empty {
+            padding: 3rem 1.5rem;
+        }
     }
 
     .empty-title {
@@ -709,35 +903,68 @@
         background-color: var(--color-st-reject);
     }
 
-    /* Tahapan detail */
+    /* ---------- Tahapan detail (Vertikal di Mobile, Horizontal di >= 640px) ---------- */
     .steps {
-        display: grid;
-        grid-auto-columns: minmax(0, 1fr);
-        grid-auto-flow: column;
+        display: flex;
+        flex-direction: column;
     }
 
     .step {
         position: relative;
         display: flex;
-        flex-direction: column;
-        gap: 0.125rem;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.25rem 0.75rem;
         min-width: 0;
-        padding-top: 2.375rem;
-        padding-right: 0.5rem;
+        padding: 0.125rem 0 1.25rem 2.5rem;
+    }
+
+    .step:last-child {
+        padding-bottom: 0.125rem;
     }
 
     .step::before {
         content: '';
         position: absolute;
-        top: 0.8125rem;
-        left: 1.75rem;
-        right: 0;
-        height: 2px;
+        top: 1.75rem;
+        bottom: 0;
+        left: 0.8125rem;
+        width: 2px;
         background-color: var(--color-line);
     }
 
     .step:last-child::before {
         display: none;
+    }
+
+    @media (min-width: 640px) {
+        .steps {
+            display: grid;
+            grid-auto-columns: minmax(0, 1fr);
+            grid-auto-flow: column;
+        }
+
+        .step {
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            gap: 0.125rem;
+            padding: 2.375rem 0.5rem 0 0;
+        }
+
+        .step:last-child {
+            padding-bottom: 0;
+        }
+
+        .step::before {
+            top: 0.8125rem;
+            bottom: auto;
+            left: 1.75rem;
+            right: 0;
+            width: auto;
+            height: 2px;
+        }
     }
 
     .step-dot {
@@ -858,9 +1085,16 @@
 
     .ledger-cell {
         display: block;
-        padding: 1rem 1.125rem 1.125rem;
+        min-width: 0;
+        padding: 0.875rem 0.9375rem 1rem;
         background-color: var(--color-surface);
         transition: background-color 150ms ease;
+    }
+
+    @media (min-width: 640px) {
+        .ledger-cell {
+            padding: 1rem 1.125rem 1.125rem;
+        }
     }
 
     a.ledger-cell:hover {
@@ -870,12 +1104,13 @@
     .ledger-label {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.375rem;
         font-size: 0.6875rem;
         font-weight: 600;
-        letter-spacing: 0.07em;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
         color: var(--color-ink-3);
+        overflow-wrap: anywhere;
     }
 
     .ledger-label::before {
@@ -888,9 +1123,9 @@
     }
 
     .ledger-value {
-        margin-top: 0.625rem;
+        margin-top: 0.5rem;
         font-family: var(--font-mono);
-        font-size: clamp(1.625rem, 1.3rem + 1vw, 2.125rem);
+        font-size: clamp(1.375rem, 1.15rem + 1.1vw, 2.125rem);
         font-weight: 500;
         line-height: 1;
         font-variant-numeric: tabular-nums;
@@ -898,18 +1133,24 @@
     }
 
     .ledger-note {
-        margin-top: 0.5rem;
-        font-size: 0.8125rem;
+        margin-top: 0.375rem;
+        font-size: 0.75rem;
         color: var(--color-ink-3);
+    }
+
+    @media (min-width: 640px) {
+        .ledger-note {
+            margin-top: 0.5rem;
+            font-size: 0.8125rem;
+        }
     }
 
     /* ---------- Daftar tiket ---------- */
     .ticket-row {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        align-items: center;
-        gap: 0.5rem 1rem;
-        padding: 1rem 1.25rem;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
         border-top: 1px solid var(--color-line);
         transition: background-color 150ms ease;
     }
@@ -924,9 +1165,29 @@
 
     .ticket-meta {
         display: flex;
-        flex-direction: column;
-        align-items: flex-end;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         gap: 0.5rem;
+        padding-top: 0.625rem;
+        border-top: 1px dashed var(--color-line);
+    }
+
+    @media (min-width: 480px) {
+        .ticket-row {
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 0.5rem 1rem;
+            padding: 1rem 1.25rem;
+        }
+
+        .ticket-meta {
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            padding-top: 0;
+            border-top: 0;
+        }
     }
 
     /* Tiket contoh di halaman masuk */
@@ -956,16 +1217,33 @@
     /* ---------- Penyaring ---------- */
     .chips {
         display: flex;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         gap: 0.375rem;
+        overflow-x: auto;
+        padding-bottom: 0.25rem;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .chips::-webkit-scrollbar {
+        display: none;
+    }
+
+    @media (min-width: 640px) {
+        .chips {
+            flex-wrap: wrap;
+            overflow-x: visible;
+            padding-bottom: 0;
+        }
     }
 
     .chip {
         display: inline-flex;
+        flex: none;
         align-items: center;
         gap: 0.5rem;
-        min-height: 2rem;
-        padding: 0 0.75rem;
+        min-height: 2.25rem;
+        padding: 0 0.8125rem;
         border: 1px solid var(--color-line-strong);
         border-radius: 999px;
         font-size: 0.8125rem;
@@ -977,6 +1255,13 @@
             background-color 150ms ease,
             border-color 150ms ease,
             color 150ms ease;
+    }
+
+    @media (min-width: 640px) {
+        .chip {
+            min-height: 2rem;
+            padding: 0 0.75rem;
+        }
     }
 
     .chip:hover {
@@ -1049,7 +1334,7 @@
         position: absolute;
         right: 0;
         z-index: 40;
-        width: 15rem;
+        width: min(15rem, calc(100vw - 2rem));
         margin-top: 0.5rem;
         padding: 0.25rem;
         transform-origin: top right;
@@ -1064,6 +1349,7 @@
         width: 100%;
         align-items: center;
         gap: 0.625rem;
+        min-height: 2.375rem;
         padding: 0.5rem 0.75rem;
         border-radius: 4px;
         font-size: 0.875rem;

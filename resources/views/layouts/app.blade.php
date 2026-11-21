@@ -46,24 +46,25 @@
     </aside>
 
     <div class="lg:pl-64">
-        <header class="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-line bg-paper px-4 sm:px-6 lg:px-10">
-            <button @click="sidebarOpen = true" type="button" class="btn btn-quiet -ml-2 px-2 lg:hidden" aria-label="Buka menu navigasi">
+        <header class="sticky top-0 z-30 flex h-14 items-center gap-2.5 border-b border-line bg-paper/95 backdrop-blur-sm px-3.5 sm:gap-3 sm:px-6 lg:px-10">
+            <button @click="sidebarOpen = true" type="button" class="btn btn-quiet -ml-1.5 px-2 lg:hidden" aria-label="Buka menu navigasi">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
             </button>
             <a href="{{ Auth::user()?->isAdmin() ? '/admin/dashboard' : '/dashboard' }}" class="flex items-center gap-2 font-semibold lg:hidden">
-                <span class="brand-mark" aria-hidden="true"></span> Labra
+                <span class="brand-mark" aria-hidden="true"></span>
+                <span>Labra</span>
             </a>
 
             <p class="hidden text-sm text-ink-3 lg:block">{{ now()->translatedFormat('l, d F Y') }}</p>
 
             <div class="relative ml-auto" x-data="{ open: false }" @keydown.escape.stop="open = false">
                 <button @click="open = !open" @click.outside="open = false" type="button"
-                        class="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-2 transition-colors duration-150 hover:bg-ink/5"
+                        class="flex items-center gap-2 rounded-full py-1 pl-1 pr-2 transition-colors duration-150 hover:bg-ink/5"
                         :aria-expanded="open.toString()" aria-haspopup="menu">
                     <span class="avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(Auth::user()->name ?? 'U', 0, 1)) }}</span>
-                    <span class="hidden max-w-40 truncate text-sm font-medium sm:block">{{ Auth::user()->name ?? 'Pengguna' }}</span>
+                    <span class="hidden max-w-36 truncate text-sm font-medium sm:block">{{ Auth::user()->name ?? 'Pengguna' }}</span>
                     <svg class="h-4 w-4 text-ink-3 transition-transform duration-200" :class="open && 'rotate-180'" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                     </svg>
@@ -93,10 +94,10 @@
             </div>
         </header>
 
-        <main id="konten" class="app-main px-4 py-6 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
+        <main id="konten" class="app-main px-3.5 pb-24 pt-5 sm:px-6 sm:pb-24 sm:pt-8 lg:px-10 lg:py-10">
             <div class="mx-auto max-w-6xl">
                 <div class="page-head">
-                    <div class="min-w-0">
+                    <div class="min-w-0 flex-1">
                         @hasSection('back')
                             <a href="@yield('back')" class="back-link">
                                 <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -120,7 +121,7 @@
                         @endif
                     </div>
                     @hasSection('actions')
-                        <div class="flex flex-wrap items-center gap-2">@yield('actions')</div>
+                        <div class="page-actions">@yield('actions')</div>
                     @endif
                 </div>
 
@@ -153,6 +154,8 @@
                 @yield('content')
             </div>
         </main>
+
+        @include('layouts.bottom-nav')
     </div>
 </body>
 </html>
