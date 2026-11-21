@@ -25,6 +25,15 @@ class ReportController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        $report = Report::where('user_id', auth()->id())
+            ->with(['category', 'images', 'updates.admin'])
+            ->findOrFail($id);
+
+        return view('user.reports.show', compact('report'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
