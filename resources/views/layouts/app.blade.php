@@ -108,7 +108,13 @@
                         @hasSection('eyebrow')
                             <div class="mb-2">@yield('eyebrow')</div>
                         @endif
-                        <h1 class="page-title">@hasSection('heading')@yield('heading')@else@yield('title')@endif</h1>
+                        <h1 class="page-title">
+                            @hasSection('heading')
+                                @yield('heading')
+                            @else
+                                @yield('title')
+                            @endif
+                        </h1>
                         @hasSection('subtitle')
                             <p class="page-sub">@yield('subtitle')</p>
                         @endif
